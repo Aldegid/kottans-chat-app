@@ -65,7 +65,7 @@ aside {
 }
 
 .username {
-  font-size: 16px;
+  font-size: 15px;
   background: white;
   margin-right: 10px;
   padding: 5px;
@@ -114,4 +114,8 @@ article {
 
 .orange {
   background-color: #efa138;
+}
+
+.timestamp {
+  font-size: 11px;
 }

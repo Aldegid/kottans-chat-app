@@ -1,16 +1,17 @@
 export class Messages {
-  constructor(selector, usersSelector) {
+  constructor(selector) {
     this.node = document.querySelector(selector);
   }
 
-  append(username, message) {
-    this.node.innerHTML += `${username} ${message}\n`;
+  append(username, message, timestamp) {
+    this.node.innerHTML += `${username} ${message} <span class='timestamp'>[${timestamp}]</span>\n`;
   }
 
-  appendSystem(message) {
+  appendSystem(message, timestamp) {
     this.append(
       `<span style="background-color: salmon; color: #fff; padding: 1px 10px; display: inline-block">system</span>`,
-      message
+      message,
+      `<span class='timestamp'>${timestamp}</span>`
     );
   }
 

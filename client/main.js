@@ -18,24 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const typingStatus = new TypingStatus('#typingStatus');
   let myName;
 
-  socket.onNameAssigned(username => {
-    myName = username;
-    userName.render(username);
-    messages.appendSystem(`<b>${username}</b> assigned to you.`);
+  socket.onNameAssigned(data => {
+    myName = data.name;
+    userName.render(data.name);
+    messages.appendSystem(
+      `<b>${data.name}</b> assigned to you.`,
+      data.timestamp
+    );
   });
 
-  socket.onUserJoined(username => {
+  socket.onUserJoined(data => {
     messages.appendSystem(
-      `<span style="color: seagreen"><b>${username}</b> joined.</span>`
+      `<span style="color: seagreen"><b>${data.name}</b> joined.</span>`,
+      data.timestamp
     );
   });
   socket.onUsersList(username => {
     usersList.render(username);
   });
 
-  socket.onUserLeft(username => {
+  socket.onUserLeft(data => {
     messages.appendSystem(
-      `<span style="color: red"><b>${username}</b> left.</span>`
+      `<span style="color: red"><b>${data.name}</b> left.</span>`,
+      data.timestamp
     );
   });
 
@@ -47,14 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.emitUserTyping();
   });
 
-  socket.onChatMessage(({ name, message }) => {
+  socket.onChatMessage(({ name, message, timestamp }) => {
     if (name === myName) {
+      timestamp = `${timestamp}`;
       message = `<span style="color: blue">${message}</span>`;
       name = `<span style = "background-color: blue; color: #fff; padding: 1px 10px; display: inline-block">${name}</span>`;
     } else {
       name = `<span style="background-color: #777; color: #fff; padding: 1px 10px; display: inline-block">${name}</span>`;
     }
-    messages.append(name, message);
+    messages.append(name, message, timestamp);
   });
 
   roomForm.onSubmit(room => {

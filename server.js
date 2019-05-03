@@ -8,6 +8,8 @@ const server = http.Server(app);
 const port = process.env.PORT || 3000;
 const io = socketIO(server);
 
+const LOCALTIME = new Date().toLocaleTimeString();
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/index.html');
 });
@@ -34,21 +36,30 @@ io.on('connection', socket => {
   socket.username = Moniker.choose();
   socket.room = 'general';
 
-  socket.emit('name assigned', socket.username);
+  socket.emit('name assigned', {
+    name: socket.username,
+    timestamp: LOCALTIME
+  });
   socket.join(socket.room);
 
-  socket.to(socket.room).emit('user joined', socket.username);
+  socket.to(socket.room).emit('user joined', {
+    name: socket.username,
+    timestamp: LOCALTIME
+  });
   io.to(socket.room).emit('users list', getConnectedClients(socket.room));
 
   socket.on('disconnect', () => {
-    io.to(socket.room).emit('user left', socket.username);
-    //io.in(socket.room).emit('users list', getConnectedClients(socket.room));
+    io.to(socket.room).emit('user left', {
+      name: socket.username,
+      timestamp: LOCALTIME
+    });
   });
 
   socket.on('chat message', message => {
     io.to(socket.room).emit('chat message', {
       name: socket.username,
-      message: `${message}  ${new Date().toLocaleTimeString()}`
+      message,
+      timestamp: LOCALTIME
     });
   });
 
@@ -60,7 +71,6 @@ io.on('connection', socket => {
     socket.to(nextRoom).emit('user joined', socket.username);
     io.to(nextRoom).emit('users list', getConnectedClients(nextRoom));
     socket.to(socket.room).emit('users list', getConnectedClients(socket.room));
-    console.log(nextRoom);
     socket.room = nextRoom;
     socket.emit('room changed', nextRoom);
   });
