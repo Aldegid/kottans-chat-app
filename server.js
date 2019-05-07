@@ -54,6 +54,7 @@ io.on('connection', socket => {
       name: socket.username,
       timestamp: LOCALTIME
     });
+    io.to(socket.room).emit('users list', getConnectedClients(socket.room));
   });
 
   socket.on('chat message', message => {
