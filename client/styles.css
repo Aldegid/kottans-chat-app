@@ -5,12 +5,12 @@
 }
 
 body {
-  font: 13px monospace, Helvetica, Arial;
+  font: 14px monospace, Helvetica, Arial;
   background-color: #848383;
 }
 
 .main {
-  max-width: 740px;
+  max-width: 920px;
   height: 50vh;
   margin: 25vh auto;
   padding: 10px;
@@ -57,11 +57,11 @@ aside {
 }
 
 article {
-  width: 50%;
+  width: 60%;
 }
 
 aside {
-  width: 25%;
+  width: 20%;
 }
 
 .username {
@@ -118,4 +118,28 @@ article {
 
 .timestamp {
   font-size: 11px;
+}
+
+.username-accent {
+  background-color: blue;
+  color: #fff;
+  padding: 1px 10px;
+  display: inline-block;
+}
+
+.username-regular {
+  background-color: #777;
+  color: #fff;
+  padding: 1px 10px;
+  display: inline-block;
+}
+
+.message-status-sent {
+  font-size: 11px;
+  color: green;
+}
+
+.message-status-pending {
+  font-size: 11px;
+  color: red;
 }

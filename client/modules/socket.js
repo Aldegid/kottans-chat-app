@@ -30,6 +30,10 @@ export class Socket {
     this.socket.on('room changed', handler);
   }
 
+  onStatusChanged(handler) {
+    this.socket.on('change status', handler);
+  }
+
   emitRoomChange(room) {
     this.socket.emit('change room', room);
   }

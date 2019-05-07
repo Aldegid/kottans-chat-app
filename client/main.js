@@ -52,15 +52,39 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.emitUserTyping();
   });
 
-  socket.onChatMessage(({ name, message, timestamp }) => {
+  const getParams = (name, message, timestamp) => {
     if (name === myName) {
-      timestamp = `${timestamp}`;
-      message = `<span style="color: blue">${message}</span>`;
-      name = `<span style = "background-color: blue; color: #fff; padding: 1px 10px; display: inline-block">${name}</span>`;
+      name = `<span class = "username-accent">me</span>`;
+      message = `<span style = "color: blue">${message}</span>`;
+      timestamp = `<span style = "color: blue" class = "timestamp">[${timestamp}]</span>`;
     } else {
-      name = `<span style="background-color: #777; color: #fff; padding: 1px 10px; display: inline-block">${name}</span>`;
+      name = `<span class="username-regular">${name}</span>`;
+      message = `<span style = "color: #777">${message}</span>`;
+      timestamp = `<span style = "color: #777" class = "timestamp">[${timestamp}]</span>`;
     }
-    messages.append(name, message, timestamp);
+    return { name, message, timestamp };
+  };
+
+  socket.onChatMessage(({ name, message, timestamp, messageStatus, id }) => {
+    const params = getParams(name, message, timestamp);
+    messages.append(
+      params.name,
+      params.message,
+      params.timestamp,
+      messageStatus,
+      id
+    );
+  });
+
+  socket.onStatusChanged(({ name, message, timestamp, messageStatus, id }) => {
+    const params = getParams(name, message, timestamp);
+    messages.modify(
+      params.name,
+      params.message,
+      params.timestamp,
+      messageStatus,
+      id
+    );
   });
 
   roomForm.onSubmit(room => {

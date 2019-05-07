@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 const io = socketIO(server);
 
 const LOCALTIME = new Date().toLocaleTimeString();
+let msgCounter = 0;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/index.html');
@@ -56,11 +57,29 @@ io.on('connection', socket => {
   });
 
   socket.on('chat message', message => {
-    io.to(socket.room).emit('chat message', {
+    msgCounter++;
+    const sendMsg = () => {
+      socket.to(socket.room).emit('chat message', {
+        name: socket.username,
+        message,
+        timestamp: LOCALTIME
+      });
+      socket.emit('change status', {
+        messageStatus: 'sent',
+        name: socket.username,
+        message,
+        timestamp: LOCALTIME,
+        id: msgCounter
+      });
+    };
+    socket.emit('chat message', {
       name: socket.username,
       message,
-      timestamp: LOCALTIME
+      timestamp: LOCALTIME,
+      id: msgCounter,
+      messageStatus: 'pending'
     });
+    setTimeout(sendMsg, 1000);
   });
 
   socket.on('change room', nextRoom => {
